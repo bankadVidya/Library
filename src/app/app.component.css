@@ -1,0 +1,29 @@
+.list-group-item {
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+.list-group-item active {
+  background-color: blue;
+}
+.Search {
+  width: 296px;
+  padding-left: 15px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  height: 40px;
+}
+
+.list-applet {
+     background-color: rgb(245 245 245);
+    border: 1px solid #e4e2e2;
+    list-style: none;
+    gap: 10px;
+    margin-bottom: 10px;
+    height: 55px;
+    width:800px;
+    padding-left: 7px;
+    display: flex;
+    align-items: center;
+    border-radius: 5px;
+}
