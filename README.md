@@ -1,4 +1,14 @@
 # InvestCloudLibrary
+ <!-- Performance Considerations -->
+ When i tried to make my model bigger by adding below data, lag is seen on
+    1.load as it has to load 5000 applets and 100 categories at once
+    2. filter logic,
+    3.Displaying all applets at once without pagination or virtual scroll
+below solutions can be incorportaed to imporve Performance and for better user interaction:-
+    1.trackBy in *ngFor can be used to Prevent full list re-renders,
+    2.Pagination can be used to show the applets
+    3.Debounced Search to optimize the search and to Avoids filtering on every keystroke.
+    4.ChangeDetectionStrategy.onPush can be used to detect and make changes only in necessary place.
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.0.1.
 

@@ -33,16 +33,21 @@ export class AppComponent implements OnInit {
   };
   ngOnInit(): void {
 
-    //When i tries to make my model bigger by adding below data, lag is seen on 
+    //When i tried to make my model bigger by adding below data, lag is seen on
     // 1.load as it has to load 5000 applets and 100 categories at once
     // 2. filter logic,
     // 3.Displaying all applets at once without pagination or virtual scroll
+    //     below solutions can be incorportaed to imporve Performance and for better user interaction:-
+    // 1.trackBy in *ngFor can be used to Prevent full list re-renders,
+    // 2.Pagination can be used to show the applets
+    // 3.Debounced Search to optimize the search and to Avoids filtering on every keystroke.
+    // 4.ChangeDetectionStrategy.onPush can be used to detect and make changes only in necessary place.
     
     
     //  this.addBigData(this.lib, 100, 5000);
 
     this.addBigData(this.lib,5,20);
-
+    this.getCategoryCounts();
     this.filteredCategories = this.lib.categories;
     let applet = 'Performance';
     this.lib.applets.filter((item) => {
@@ -50,7 +55,7 @@ export class AppComponent implements OnInit {
         this.filteredApplets.push(item.name);
       }
     });
-    this.getCategoryCounts();
+    // this.getCategoryCounts();
    
   }
   selectCategory(applet: any) {
@@ -62,22 +67,7 @@ export class AppComponent implements OnInit {
       }
     });
   }
-  //   selectCategory(applet: any) {
-  //   this.selectedCat = applet;
-  //   const matched = this.lib.applets.filter((item) =>
-  //     item.categories.includes(applet)
-  //   );
-  //   this.filteredApplets = matched.map((item) => item.name);
-  //   this.getCategoryCounts(matched); // 👉 Add this line
-  // }
-  // selectCategory(applet: any) {
-  //   this.selectedCat = applet;
-  //   const matched = this.lib.applets.filter((item) =>
-  //     item.categories.includes(applet)
-  //   );
-  //   this.filteredApplets = matched.map((item) => item.name);
-  //   this.getCategoryCounts(); // 🔧 Use this
-  // }
+ 
   filterByCategories() {
     this.filteredApplets = [];
 
@@ -110,45 +100,32 @@ export class AppComponent implements OnInit {
             }
           });
         });
-
-        // Preserve order as per original lib.categories
         this.filteredCategories = this.lib.categories.filter((cat) =>
           foundCategories.includes(cat)
         );
 
-        //count
-        this.lib.categories.forEach((cat) => {
-          this.categoryCounts[cat] = this.lib.applets.filter((item) =>
-            item.name
-              .toLocaleLowerCase()
-              .includes(this.searchApplet.toLocaleLowerCase())
-          ).length;
-        });
       }
     }
   }
 
-  getCategoryCounts() {
-    this.categoryCounts = {};
 
-    if (this.searchApplet) {
-      // Count all applets that include this category on search
-      this.lib.categories.forEach((cat) => {
-        this.categoryCounts[cat] = this.lib.applets.filter((item) =>
-          item.name
-            .toLocaleLowerCase()
-            .includes(this.searchApplet.toLocaleLowerCase())
-        ).length;
-      });
+getCategoryCounts() {
+  this.categoryCounts = {};
+
+  this.lib.categories.forEach((cat) => {
+    const appletsInCategory = this.lib.applets.filter((item) =>
+      item.categories.includes(cat)
+    );
+
+    if (this.searchApplet && this.searchApplet.trim() !== '') {
+      this.categoryCounts[cat] = appletsInCategory.filter((item) =>
+        item.name.toLowerCase().includes(this.searchApplet.toLowerCase())
+      ).length;
     } else {
-      this.lib.categories.forEach((cat) => {
-        // Count all applets that include this category on load
-        this.categoryCounts[cat] = this.lib.applets.filter((item) =>
-          item.categories.includes(cat)
-        ).length;
-      });
+      this.categoryCounts[cat] = appletsInCategory.length;
     }
-  }
+  });
+}
 
    addBigData(lib: any, ncategs: any, napplets: any) {
     console.log('inside lib ', lib);
